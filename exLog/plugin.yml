@@ -1,0 +1,16 @@
+name: ExLog
+main: io.github.runassudo.exlog.ExLogPlugin
+version: 0.0.1-palpha
+author: RunasSudo
+
+commands:
+  exlog:
+    aliases: el
+    description: Execute an exLog command.
+    usage: /<command> [command]
+    permission: exlog.command
+    permission-message: You don't have <permission>
+
+permissions:
+  exlog.*:
+    description: Gives access to all exLog commands.

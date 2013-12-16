@@ -1,0 +1,4 @@
+name: ExLogNBTDataProvider
+main: io.github.runassudo.exlog.defaults.ExLogNBTDataProvider
+version: 0.0.1-palpha
+author: RunasSudo
