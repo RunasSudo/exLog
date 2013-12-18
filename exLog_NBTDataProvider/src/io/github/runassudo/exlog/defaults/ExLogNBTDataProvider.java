@@ -12,6 +12,7 @@ import java.util.logging.Level;
 import org.jnbt.CompoundTag;
 import org.jnbt.IntTag;
 import org.jnbt.ListTag;
+import org.jnbt.LongTag;
 import org.jnbt.NBTInputStream;
 import org.jnbt.NBTOutputStream;
 import org.jnbt.StringTag;
@@ -65,7 +66,7 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 			ExLogEntry entry = new ExLogEntry();
 			Map<String, Tag> nbtEntry = ((CompoundTag) tag).getValue();
 
-			entry.date = ((StringTag) nbtEntry.get("date")).getValue();
+			entry.date = ((LongTag) nbtEntry.get("date")).getValue();
 			entry.x = ((IntTag) nbtEntry.get("x")).getValue().intValue();
 			entry.y = ((IntTag) nbtEntry.get("y")).getValue().intValue();
 			entry.z = ((IntTag) nbtEntry.get("z")).getValue().intValue();
@@ -101,7 +102,7 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 		for (ExLogEntry entry : wholeData) {
 			Map<String, Tag> nbtEntry = new HashMap<String, Tag>();
 
-			nbtEntry.put("date", new StringTag("date", entry.date));
+			nbtEntry.put("date", new LongTag("date", entry.date));
 			nbtEntry.put("x", new IntTag("x", entry.x));
 			nbtEntry.put("y", new IntTag("y", entry.y));
 			nbtEntry.put("z", new IntTag("z", entry.z));

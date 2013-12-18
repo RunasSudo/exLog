@@ -50,7 +50,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 				ExLogEntry entry = new ExLogEntry();
 				JSONObject jsonEntry = new JSONObject(read);
 
-				entry.date = jsonEntry.getString("date");
+				entry.date = jsonEntry.getLong("date");
 				entry.x = (int) jsonEntry.getLong("x");
 				entry.y = (int) jsonEntry.getLong("y");
 				entry.z = (int) jsonEntry.getLong("z");
@@ -79,6 +79,10 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 	@Override
 	public void appendData(ArrayList<ExLogEntry> data) throws Exception {
 		File dataFile = new File(getConfig().getString("dataFile"));
+		if (!dataFile.exists()) {
+			createFile();
+		}
+		
 		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
 			for (ExLogEntry entry : data) {
 				JSONObject jsonEntry = new JSONObject();
