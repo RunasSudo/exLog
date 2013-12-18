@@ -1,4 +1,4 @@
 exLog
 =====
 
-The lightweight extensible Bukkit logging platform.
+The extensible Bukkit logging framework.
