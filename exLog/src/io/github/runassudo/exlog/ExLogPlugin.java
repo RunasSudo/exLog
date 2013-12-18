@@ -68,14 +68,19 @@ public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
 
 	/**
-	 * Convenience method to get instance of ExLogPlugin.
+	 * Convenience method to get instance of <code>ExLogPlugin</code>.
 	 * 
-	 * @return the loaded instance of ExLogPlugin
+	 * @return The loaded instance of <code>ExLogPlugin</code>.
 	 */
 	public static ExLogPlugin getInstance() {
 		return (ExLogPlugin) Bukkit.getPluginManager().getPlugin("ExLogPlugin");
 	}
 
+	/**
+	 * Gets the currently loaded Data Provider.
+	 * 
+	 * @return The loaded implementation of <code>ExLogDataProvider</code>.
+	 */
 	public ExLogDataProvider getDataProvider() {
 		return (ExLogDataProvider) Bukkit.getPluginManager().getPlugin(
 				getConfig().getString("dataProvider"));
