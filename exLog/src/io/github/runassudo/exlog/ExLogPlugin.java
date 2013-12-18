@@ -1,5 +1,6 @@
 package io.github.runassudo.exlog;
 
+import java.io.File;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -13,13 +14,17 @@ public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
 	@Override
 	public void onEnable() {
+		File configFile = new File(this.getDataFolder() + "/config.yml");
+		if (!configFile.exists()) {
+			this.saveDefaultConfig();
+		}
+
 		getLogger().log(Level.INFO,
 				"Using " + getDataProvider().getName() + " as Data Provider.");
 	}
 
 	@Override
 	public void onDisable() {
-
 	}
 
 	@Override

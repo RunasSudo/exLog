@@ -1,0 +1,5 @@
+name: ExLogJSONDataProvider
+main: io.github.runassudo.exlog.defaults.ExLogJSONDataProvider
+version: 0.0.1-palpha
+author: RunasSudo
+depend: [ExLog]
