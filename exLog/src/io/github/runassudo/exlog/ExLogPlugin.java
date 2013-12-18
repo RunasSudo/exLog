@@ -1,6 +1,5 @@
 package io.github.runassudo.exlog;
 
-import java.util.ArrayList;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -14,14 +13,8 @@ public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
 	@Override
 	public void onEnable() {
-		getLogger().log(Level.CONFIG,
+		getLogger().log(Level.INFO,
 				"Using " + getDataProvider().getName() + " as Data Provider.");
-
-		try {
-			data = getDataProvider().readData();
-		} catch (Exception e) {
-			getLogger().log(Level.SEVERE, "Failed to read data.", e);
-		}
 	}
 
 	@Override
@@ -32,8 +25,8 @@ public class ExLogPlugin extends JavaPlugin {
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label,
 			String[] args) {
-		if (cmd.getName().equalsIgnoreCase("exlog")
-				|| cmd.getName().equalsIgnoreCase("el") && args.length > 0) {
+		if ((cmd.getName().equalsIgnoreCase("exlog") || cmd.getName()
+				.equalsIgnoreCase("el")) && args.length > 0) {
 			switch (args[0]) {
 			case "help":
 				sender.sendMessage("Usage: /exlog [command]");
@@ -44,6 +37,22 @@ public class ExLogPlugin extends JavaPlugin {
 				sender.sendMessage("Version " + getDescription().getVersion());
 				sender.sendMessage("Created by RunasSudo.");
 				return true;
+			case "test":
+				try {
+					ExLogEntry entry = new ExLogEntry();
+					entry.x = 1;
+					entry.y = 2;
+					entry.z = 3;
+					entry.dimension = 4;
+					entry.player = "Player1";
+					entry.otherData.put("data1", "hello");
+					getDataProvider().appendData(entry);
+					sender.sendMessage("Added dummy entry.");
+				} catch (Exception e) {
+					getLogger().log(Level.SEVERE, "Failed to add entry.", e);
+					sender.sendMessage("Failed to add entry. Check logs.");
+				}
+				return true;
 			}
 		}
 		return false;
@@ -52,7 +61,6 @@ public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
 	// EXLOG STUFF
 	// ----------------------------------------------------------------
-	private ArrayList<ExLogEntry> data;
 
 	/**
 	 * Convenience method to get instance of ExLogPlugin.
@@ -66,9 +74,5 @@ public class ExLogPlugin extends JavaPlugin {
 	public ExLogDataProvider getDataProvider() {
 		return (ExLogDataProvider) Bukkit.getPluginManager().getPlugin(
 				getConfig().getString("dataProvider"));
-	}
-	
-	public ArrayList<ExLogEntry> getData() {
-		return data;
 	}
 }
