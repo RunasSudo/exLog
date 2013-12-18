@@ -15,9 +15,8 @@ import io.github.runassudo.exlog.ExLogEntry;
 import io.github.runassudo.exlog.query.ExLogDataQuery;
 
 /**
- * Class to read and write data from an NBT data file. Very poor implementation,
- * stores data in memory when writing file. <b>Not recommended for production
- * use.</b>
+ * Class to read and write data from a JSON data file. Recommended for use on
+ * small servers.
  * 
  * @author runassudo
  * 
@@ -71,6 +70,9 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 					data.add(entry);
 				}
 			}
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Unable to read data file.", e);
+			throw e;
 		}
 
 		return data;
@@ -82,7 +84,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		if (!dataFile.exists()) {
 			createFile();
 		}
-		
+
 		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
 			for (ExLogEntry entry : data) {
 				JSONObject jsonEntry = new JSONObject();
@@ -107,6 +109,9 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 				jsonEntry.write(pw);
 				pw.println();
 			}
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Unable to write data file.", e);
+			throw e;
 		}
 	}
 
