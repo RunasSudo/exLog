@@ -50,6 +50,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 				ExLogEntry entry = new ExLogEntry();
 				JSONObject jsonEntry = new JSONObject(read);
 
+				entry.date = jsonEntry.getString("date");
 				entry.x = (int) jsonEntry.getLong("x");
 				entry.y = (int) jsonEntry.getLong("y");
 				entry.z = (int) jsonEntry.getLong("z");
@@ -82,6 +83,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 			for (ExLogEntry entry : data) {
 				JSONObject jsonEntry = new JSONObject();
 
+				jsonEntry.put("date", entry.date);
 				jsonEntry.put("x", entry.x);
 				jsonEntry.put("y", entry.y);
 				jsonEntry.put("z", entry.z);
