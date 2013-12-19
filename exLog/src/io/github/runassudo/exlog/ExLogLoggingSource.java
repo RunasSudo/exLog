@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -13,8 +14,9 @@ public abstract class ExLogLoggingSource extends JavaPlugin implements Listener 
 	}
 
 	public final static String defaultFormatEntry(ExLogEntry entry) {
-		return entry.player + " @ " + entry.dimension + "(" + entry.x + ","
-				+ entry.y + "," + entry.z + ")";
+		return ChatColor.BLUE + entry.player + ChatColor.RESET + " @ "
+				+ entry.dimension + "(" + entry.x + "," + entry.y + ","
+				+ entry.z + ")";
 	}
 
 	@Override

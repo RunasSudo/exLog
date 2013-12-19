@@ -1,5 +1,6 @@
 package io.github.runassudo.exlog;
 
+import io.github.runassudo.exlog.query.ExLogDataQuery;
 import io.github.runassudo.exlog.query.JSONDataQuery;
 
 import java.io.File;
@@ -8,6 +9,7 @@ import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -26,6 +28,9 @@ public class ExLogPlugin extends JavaPlugin {
 
 		getLogger().log(Level.INFO,
 				"Using " + getDataProvider().getName() + " as Data Provider.");
+
+		ExLogPlayerListener listener = new ExLogPlayerListener();
+		Bukkit.getPluginManager().registerEvents(listener, this);
 	}
 
 	@Override
@@ -70,28 +75,31 @@ public class ExLogPlugin extends JavaPlugin {
 				String queryString = join(" ",
 						Arrays.copyOfRange(args, 1, args.length));
 				JSONObject queryObject = new JSONObject(queryString);
-
-				try {
-					ArrayList<ExLogEntry> results = getDataProvider().readData(
-							new JSONDataQuery(queryObject));
-
-					for (ExLogEntry entry : results) {
-						ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
-								.getPluginManager().getPlugin(entry.origin);
-						if (originPlugin == null)
-							sender.sendMessage(ExLogLoggingSource
-									.defaultFormatEntry(entry));
-						else
-							sender.sendMessage(originPlugin.formatEntry(entry));
-					}
-				} catch (Exception e) {
-					getLogger()
-							.log(Level.SEVERE, "Unable to perform query.", e);
-				}
+				performQuery(new JSONDataQuery(queryObject), sender);
 				return true;
 			}
 		}
 		return false;
+	}
+
+	public void performQuery(ExLogDataQuery query, CommandSender sender) {
+		sender.sendMessage(ChatColor.GOLD + "=== QUERY RESULTS ===");
+		try {
+			ArrayList<ExLogEntry> results = getDataProvider().readData(query);
+
+			for (ExLogEntry entry : results) {
+				ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
+						.getPluginManager().getPlugin(entry.origin);
+				if (originPlugin == null)
+					sender.sendMessage(ExLogLoggingSource
+							.defaultFormatEntry(entry));
+				else
+					sender.sendMessage(originPlugin.formatEntry(entry));
+			}
+		} catch (Exception e) {
+			sender.sendMessage("Error performing query. Check logs.");
+			getLogger().log(Level.SEVERE, "Unable to perform query.", e);
+		}
 	}
 
 	private static String join(String glue, String... data) {

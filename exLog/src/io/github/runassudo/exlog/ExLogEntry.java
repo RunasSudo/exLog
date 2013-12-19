@@ -2,6 +2,7 @@ package io.github.runassudo.exlog;
 
 import java.util.HashMap;
 
+import org.bukkit.World;
 import org.bukkit.block.Block;
 
 public class ExLogEntry {
@@ -16,16 +17,18 @@ public class ExLogEntry {
 		entry.x = block.getX();
 		entry.y = block.getY();
 		entry.z = block.getZ();
-		switch (block.getWorld().getEnvironment()) {
+		entry.dimension = worldToDimension(block.getWorld());
+	}
+
+	public final static int worldToDimension(World world) {
+		switch (world.getEnvironment()) {
 		case NORMAL:
-			entry.dimension = 0;
-			break;
+			return 0;
 		case NETHER:
-			entry.dimension = 1;
-			break;
+			return 1;
 		case THE_END:
-			entry.dimension = 2;
-			break;
+			return 2;
 		}
+		return -100;
 	}
 }
