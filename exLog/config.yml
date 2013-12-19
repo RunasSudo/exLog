@@ -1,1 +1,2 @@
 dataProvider: ExLogJSONDataProvider
+loggingSources: [ExLogBlockLoggingSource]

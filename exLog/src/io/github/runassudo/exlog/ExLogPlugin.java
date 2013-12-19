@@ -51,6 +51,7 @@ public class ExLogPlugin extends JavaPlugin {
 			if (args[0].equalsIgnoreCase("test")) {
 				try {
 					ExLogEntry entry = new ExLogEntry();
+					entry.date = System.currentTimeMillis();
 					entry.x = 1;
 					entry.y = 2;
 					entry.z = 3;
@@ -77,13 +78,17 @@ public class ExLogPlugin extends JavaPlugin {
 					for (ExLogEntry entry : results) {
 						ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
 								.getPluginManager().getPlugin(entry.origin);
-						if (originPlugin != null)
+						if (originPlugin == null)
+							sender.sendMessage(ExLogLoggingSource
+									.defaultFormatEntry(entry));
+						else
 							sender.sendMessage(originPlugin.formatEntry(entry));
 					}
 				} catch (Exception e) {
 					getLogger()
 							.log(Level.SEVERE, "Unable to perform query.", e);
 				}
+				return true;
 			}
 		}
 		return false;
@@ -109,7 +114,7 @@ public class ExLogPlugin extends JavaPlugin {
 	 * @return The loaded instance of <code>ExLogPlugin</code>.
 	 */
 	public static ExLogPlugin getInstance() {
-		return (ExLogPlugin) Bukkit.getPluginManager().getPlugin("ExLogPlugin");
+		return (ExLogPlugin) Bukkit.getPluginManager().getPlugin("ExLog");
 	}
 
 	/**
