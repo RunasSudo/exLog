@@ -60,7 +60,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 				entry.dimension = jsonEntry.getInt("dimension");
 				entry.player = jsonEntry.getString("player");
 
-				if (jsonEntry.getJSONObject("otherData") != null) {
+				if (jsonEntry.has("otherData")) {
 					JSONObject jsonOtherData = jsonEntry
 							.getJSONObject("otherData");
 

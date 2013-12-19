@@ -1,12 +1,17 @@
 package io.github.runassudo.exlog;
 
+import io.github.runassudo.exlog.query.JSONDataQuery;
+
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.json.JSONObject;
 
 public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
@@ -60,8 +65,38 @@ public class ExLogPlugin extends JavaPlugin {
 				}
 				return true;
 			}
+			if (args[0].equalsIgnoreCase("query")) {
+				String queryString = join(" ",
+						Arrays.copyOfRange(args, 1, args.length));
+				JSONObject queryObject = new JSONObject(queryString);
+
+				try {
+					ArrayList<ExLogEntry> results = getDataProvider().readData(
+							new JSONDataQuery(queryObject));
+
+					for (ExLogEntry entry : results) {
+						ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
+								.getPluginManager().getPlugin(entry.origin);
+						if (originPlugin != null)
+							sender.sendMessage(originPlugin.formatEntry(entry));
+					}
+				} catch (Exception e) {
+					getLogger()
+							.log(Level.SEVERE, "Unable to perform query.", e);
+				}
+			}
 		}
 		return false;
+	}
+
+	private static String join(String glue, String... data) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < data.length; i++) {
+			sb.append(data[i]);
+			if (i != data.length - 1)
+				sb.append(glue);
+		}
+		return sb.toString();
 	}
 
 	// ----------------------------------------------------------------

@@ -69,6 +69,7 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 			ExLogEntry entry = new ExLogEntry();
 			Map<String, Tag> nbtEntry = ((CompoundTag) tag).getValue();
 
+			entry.origin = ((StringTag) nbtEntry.get("origin")).getValue();
 			entry.date = ((LongTag) nbtEntry.get("date")).getValue();
 			entry.x = ((IntTag) nbtEntry.get("x")).getValue().intValue();
 			entry.y = ((IntTag) nbtEntry.get("y")).getValue().intValue();
@@ -105,6 +106,7 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 		for (ExLogEntry entry : wholeData) {
 			Map<String, Tag> nbtEntry = new HashMap<String, Tag>();
 
+			nbtEntry.put("origin", new StringTag("player", entry.origin));
 			nbtEntry.put("date", new LongTag("date", entry.date));
 			nbtEntry.put("x", new IntTag("x", entry.x));
 			nbtEntry.put("y", new IntTag("y", entry.y));

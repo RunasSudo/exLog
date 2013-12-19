@@ -4,6 +4,7 @@ import io.github.runassudo.exlog.query.ExLogDataQuery;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -55,11 +56,28 @@ public abstract class ExLogDataProvider extends JavaPlugin {
 		appendData(data);
 	}
 
+	/**
+	 * Flushes the data source, ensuring that all data is saved.
+	 * 
+	 * @throws Exception
+	 */
+	public void flush() throws Exception {
+	}
+
 	@Override
 	public void onEnable() {
 		File configFile = new File(this.getDataFolder() + "/config.yml");
 		if (!configFile.exists()) {
 			this.saveDefaultConfig();
+		}
+	}
+
+	@Override
+	public void onDisable() {
+		try {
+			flush();
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Unable to flush data file.", e);
 		}
 	}
 }

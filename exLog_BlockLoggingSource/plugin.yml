@@ -1,0 +1,5 @@
+name: ExLogBlockLoggingSource
+main: io.github.runassudo.exlog.defaults.ExLogBlockLoggingSource
+version: 0.0.1-palpha
+author: RunasSudo
+depend: [ExLog]
