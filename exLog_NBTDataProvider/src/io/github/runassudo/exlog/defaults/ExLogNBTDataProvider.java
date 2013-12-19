@@ -45,12 +45,15 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 		}
 
 		Map<String, Tag> root;
-		try (NBTInputStream nis = new NBTInputStream(new FileInputStream(
-				dataFile))) {
+		NBTInputStream nis = null;
+		try {
+			nis = new NBTInputStream(new FileInputStream(dataFile));
 			root = ((CompoundTag) nis.readTag()).getValue();
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to read data file.", e);
 			throw e;
+		} finally {
+			nis.close();
 		}
 
 		int fileVersion = ((IntTag) root.get("version")).getValue().intValue();
@@ -131,12 +134,15 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 		root.put("entries", nbtDataTag);
 
 		File dataFile = new File(getConfig().getString("dataFile"));
-		try (NBTOutputStream nos = new NBTOutputStream(new FileOutputStream(
-				dataFile))) {
+		NBTOutputStream nos = null;
+		try {
+			nos = new NBTOutputStream(new FileOutputStream(dataFile));
 			nos.writeTag(new CompoundTag("root", root));
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to write data file.", e);
 			throw e;
+		} finally {
+			nos.close();
 		}
 	}
 
@@ -148,12 +154,15 @@ public class ExLogNBTDataProvider extends ExLogDataProvider {
 		root.put("entries", nbtDataTag);
 
 		File dataFile = new File(getConfig().getString("dataFile"));
-		try (NBTOutputStream nos = new NBTOutputStream(new FileOutputStream(
-				dataFile))) {
+		NBTOutputStream nos = null;
+		try {
+			nos = new NBTOutputStream(new FileOutputStream(dataFile));
 			nos.writeTag(new CompoundTag("root", root));
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to write data file.", e);
 			throw e;
+		} finally {
+			nos.close();
 		}
 	}
 }

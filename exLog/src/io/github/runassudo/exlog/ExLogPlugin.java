@@ -32,17 +32,18 @@ public class ExLogPlugin extends JavaPlugin {
 			String[] args) {
 		if ((cmd.getName().equalsIgnoreCase("exlog") || cmd.getName()
 				.equalsIgnoreCase("el")) && args.length > 0) {
-			switch (args[0]) {
-			case "help":
+			if (args[0].equalsIgnoreCase("help")) {
 				sender.sendMessage("Usage: /exlog [command]");
 				sender.sendMessage("Refer to BukkitDev or Github for more info.");
 				return true;
-			case "info":
+			}
+			if (args[0].equalsIgnoreCase("info")) {
 				sender.sendMessage("exLog: The lightweight extensible Bukkit logging platform.");
 				sender.sendMessage("Version " + getDescription().getVersion());
 				sender.sendMessage("Created by RunasSudo.");
 				return true;
-			case "test":
+			}
+			if (args[0].equalsIgnoreCase("test")) {
 				try {
 					ExLogEntry entry = new ExLogEntry();
 					entry.x = 1;

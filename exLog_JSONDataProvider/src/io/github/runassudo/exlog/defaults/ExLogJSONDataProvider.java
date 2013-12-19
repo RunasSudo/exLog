@@ -35,7 +35,10 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		}
 
 		ArrayList<ExLogEntry> data = new ArrayList<ExLogEntry>();
-		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
+		BufferedReader rdr = null;
+		try {
+			rdr = new BufferedReader(new FileReader(dataFile));
+
 			int fileVersion = Integer.parseInt(rdr.readLine());
 			if (fileVersion != DATA_VERSION) {
 				getLogger().log(
@@ -73,6 +76,8 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to read data file.", e);
 			throw e;
+		} finally {
+			rdr.close();
 		}
 
 		return data;
@@ -85,7 +90,10 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 			createFile();
 		}
 
-		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter(dataFile, true));
+
 			for (ExLogEntry entry : data) {
 				JSONObject jsonEntry = new JSONObject();
 
@@ -112,13 +120,20 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to write data file.", e);
 			throw e;
+		} finally {
+			pw.close();
 		}
 	}
 
 	private void createFile() throws Exception {
 		File dataFile = new File(getConfig().getString("dataFile"));
-		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
+
+		PrintWriter pw = null;
+		try {
+			pw = new PrintWriter(new FileWriter(dataFile, true));
 			pw.println(DATA_VERSION);
+		} finally {
+			pw.close();
 		}
 	}
 }
