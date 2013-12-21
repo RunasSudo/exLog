@@ -1,6 +1,7 @@
 package io.github.runassudo.exlog;
 
 import io.github.runassudo.exlog.query.LocationDataQuery;
+import io.github.runassudo.exlog.util.ExLogDataHelper;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -21,8 +22,17 @@ public class ExLogPlayerListener implements Listener {
 						block.getY(), block.getZ(),
 						ExLogEntry.worldToDimension(block.getWorld()));
 
-				ExLogPlugin.getInstance()
-						.performQuery(query, event.getPlayer());
+				ExLogDataHelper.performQuery(query, event.getPlayer());
+			}
+			if (event.getItem().getType() == Material.BONE) {
+				Block block = event.getClickedBlock().getRelative(
+						event.getBlockFace());
+
+				LocationDataQuery query = new LocationDataQuery(block.getX(),
+						block.getY(), block.getZ(),
+						ExLogEntry.worldToDimension(block.getWorld()));
+
+				ExLogDataHelper.performQuery(query, event.getPlayer());
 			}
 		}
 	}

@@ -1,18 +1,22 @@
 package io.github.runassudo.exlog.defaults;
 
-import java.util.logging.Level;
-
 import org.bukkit.ChatColor;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.player.PlayerBucketEmptyEvent;
+import org.bukkit.event.player.PlayerBucketFillEvent;
 
 import io.github.runassudo.exlog.ExLogEntry;
 import io.github.runassudo.exlog.ExLogLoggingSource;
-import io.github.runassudo.exlog.ExLogPlugin;
+import io.github.runassudo.exlog.util.ExLogDataHelper;
+import io.github.runassudo.exlog.util.ExLogWriteCallback;
 
 public class ExLogBlockLoggingSource extends ExLogLoggingSource {
+	// TODO: Use block names for 1.7
+	// TODO: Use player UUIDs for 1.7
+
 	@Override
 	public String formatEntry(ExLogEntry entry) {
 		String blockId = entry.otherData.get("blockId");
@@ -37,13 +41,8 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		entry.player = event.getPlayer().getName();
 		entry.otherData.put("type", "0");
 		entry.otherData.put("blockId", event.getBlock().getTypeId() + "");
-		// TODO: Use Block names for 1.7
 
-		try {
-			ExLogPlugin.getInstance().getDataProvider().appendData(entry);
-		} catch (Exception e) {
-			getLogger().log(Level.SEVERE, "Failed to add entry.", e);
-		}
+		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
 	}
 
 	@SuppressWarnings("deprecation")
@@ -56,12 +55,37 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		entry.player = event.getPlayer().getName();
 		entry.otherData.put("type", "1");
 		entry.otherData.put("blockId", event.getBlock().getTypeId() + "");
-		// TODO: Use Block names for 1.7
 
-		try {
-			ExLogPlugin.getInstance().getDataProvider().appendData(entry);
-		} catch (Exception e) {
-			getLogger().log(Level.SEVERE, "Failed to add entry.", e);
-		}
+		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerBucketFill(PlayerBucketFillEvent event) {
+		ExLogEntry entry = new ExLogEntry();
+		entry.date = System.currentTimeMillis();
+		entry.origin = getName();
+		ExLogEntry.populate(entry, event.getBlockClicked());
+		entry.player = event.getPlayer().getName();
+		entry.otherData.put("type", "2");
+		entry.otherData
+				.put("blockId", event.getBlockClicked().getTypeId() + "");
+
+		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
+	}
+
+	@SuppressWarnings("deprecation")
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
+		ExLogEntry entry = new ExLogEntry();
+		entry.date = System.currentTimeMillis();
+		entry.origin = getName();
+		ExLogEntry.populate(entry, event.getBlockClicked());
+		entry.player = event.getPlayer().getName();
+		entry.otherData.put("type", "3");
+		entry.otherData
+				.put("blockId", event.getBlockClicked().getTypeId() + "");
+
+		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
 	}
 }
