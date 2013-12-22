@@ -74,8 +74,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		ExLogEntry.populate(entry, event.getBlockClicked());
 		entry.player = event.getPlayer().getName();
 		entry.otherData.put("type", "2");
-		entry.otherData.put("blockType", event.getBlockClicked().getType()
-				.name());
+		entry.otherData.put("blockType", event.getBucket().name());
 
 		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
 	}
@@ -88,8 +87,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		ExLogEntry.populate(entry, event.getBlockClicked());
 		entry.player = event.getPlayer().getName();
 		entry.otherData.put("type", "3");
-		entry.otherData.put("blockType", event.getBlockClicked().getType()
-				.name());
+		entry.otherData.put("blockType", event.getBucket().name());
 
 		ExLogDataHelper.performWrite(entry, new ExLogWriteCallback());
 	}
