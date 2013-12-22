@@ -6,6 +6,7 @@ import io.github.runassudo.exlog.ExLogPlugin;
 import io.github.runassudo.exlog.query.ExLogDataQuery;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -144,11 +145,16 @@ public class ExLogDataHelper {
 				for (ExLogEntry entry : results) {
 					ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
 							.getPluginManager().getPlugin(entry.origin);
-					if (originPlugin == null)
-						sender.sendMessage(ExLogLoggingSource
-								.defaultFormatEntry(entry));
-					else
-						sender.sendMessage(originPlugin.formatEntry(entry));
+
+					String prettyDate = ExLogPlugin.getInstance()
+							.getDateFormat().format(new Date(entry.date));
+					String message = ExLogLoggingSource
+							.defaultFormatEntry(entry);
+
+					if (originPlugin != null)
+						message = originPlugin.formatEntry(entry);
+
+					sender.sendMessage(prettyDate + ": " + message);
 				}
 			}
 		});

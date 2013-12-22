@@ -4,6 +4,7 @@ import io.github.runassudo.exlog.query.JSONDataQuery;
 import io.github.runassudo.exlog.util.ExLogDataHelper;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 
@@ -23,6 +24,8 @@ public class ExLogPlugin extends JavaPlugin {
 		if (!configFile.exists()) {
 			this.saveDefaultConfig();
 		}
+
+		dateFormat = new SimpleDateFormat(getConfig().getString("dateFormat"));
 
 		getLogger().log(Level.INFO,
 				"Using " + getDataProvider().getName() + " as Data Provider.");
@@ -95,6 +98,8 @@ public class ExLogPlugin extends JavaPlugin {
 	// EXLOG STUFF
 	// ----------------------------------------------------------------
 
+	private SimpleDateFormat dateFormat;
+
 	/**
 	 * Convenience method to get instance of <code>ExLogPlugin</code>.
 	 * 
@@ -112,5 +117,9 @@ public class ExLogPlugin extends JavaPlugin {
 	public ExLogDataProvider getDataProvider() {
 		return (ExLogDataProvider) Bukkit.getPluginManager().getPlugin(
 				getConfig().getString("dataProvider"));
+	}
+
+	public SimpleDateFormat getDateFormat() {
+		return dateFormat;
 	}
 }
