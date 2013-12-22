@@ -22,13 +22,23 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		String blockId = entry.otherData.get("blockId");
 
 		if (entry.otherData.get("type").equals("0"))
-			return ChatColor.BLUE + entry.player + ChatColor.RESET
-					+ " destroyed " + blockId + " @ " + entry.dimension + "("
-					+ entry.x + "," + entry.y + "," + entry.z + ")";
-		else
-			return ChatColor.BLUE + entry.player + ChatColor.RESET + " placed "
+			return ChatColor.BLUE + entry.player + ChatColor.RESET + " break "
 					+ blockId + " @ " + entry.dimension + "(" + entry.x + ","
 					+ entry.y + "," + entry.z + ")";
+		if (entry.otherData.get("type").equals("1"))
+			return ChatColor.BLUE + entry.player + ChatColor.RESET + " place "
+					+ blockId + " @ " + entry.dimension + "(" + entry.x + ","
+					+ entry.y + "," + entry.z + ")";
+		if (entry.otherData.get("type").equals("2"))
+			return ChatColor.BLUE + entry.player + ChatColor.RESET + " scoop "
+					+ blockId + " @ " + entry.dimension + "(" + entry.x + ","
+					+ entry.y + "," + entry.z + ")";
+		if (entry.otherData.get("type").equals("3"))
+			return ChatColor.BLUE + entry.player + ChatColor.RESET + " empty "
+					+ blockId + " @ " + entry.dimension + "(" + entry.x + ","
+					+ entry.y + "," + entry.z + ")";
+
+		return ExLogLoggingSource.defaultFormatEntry(entry);
 	}
 
 	@SuppressWarnings("deprecation")
