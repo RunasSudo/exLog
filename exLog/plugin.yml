@@ -1,6 +1,6 @@
 name: ExLog
 main: io.github.runassudo.exlog.ExLogPlugin
-version: 0.0.4-alpha
+version: 0.0.4-beta
 author: RunasSudo
 
 commands:
