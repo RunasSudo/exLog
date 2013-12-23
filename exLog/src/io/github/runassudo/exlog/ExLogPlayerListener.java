@@ -3,6 +3,7 @@ package io.github.runassudo.exlog;
 import io.github.runassudo.exlog.query.LocationDataQuery;
 import io.github.runassudo.exlog.util.ExLogDataHelper;
 
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -16,23 +17,33 @@ public class ExLogPlayerListener implements Listener {
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasItem()) {
 			if (event.getItem().getType() == Material.STICK) {
-				Block block = event.getClickedBlock();
+				if (event.getPlayer().hasPermission("exlog.query.stick")) {
+					Block block = event.getClickedBlock();
 
-				LocationDataQuery query = new LocationDataQuery(block.getX(),
-						block.getY(), block.getZ(),
-						ExLogEntry.worldToDimension(block.getWorld()));
+					LocationDataQuery query = new LocationDataQuery(
+							block.getX(), block.getY(), block.getZ(),
+							ExLogEntry.worldToDimension(block.getWorld()));
 
-				ExLogDataHelper.performQuery(query, event.getPlayer());
+					ExLogDataHelper.performQuery(query, event.getPlayer());
+				} else {
+					event.getPlayer().sendMessage(
+							ChatColor.RED + "No permission.");
+				}
 			}
 			if (event.getItem().getType() == Material.BONE) {
-				Block block = event.getClickedBlock().getRelative(
-						event.getBlockFace());
+				if (event.getPlayer().hasPermission("exlog.query.bone")) {
+					Block block = event.getClickedBlock().getRelative(
+							event.getBlockFace());
 
-				LocationDataQuery query = new LocationDataQuery(block.getX(),
-						block.getY(), block.getZ(),
-						ExLogEntry.worldToDimension(block.getWorld()));
+					LocationDataQuery query = new LocationDataQuery(
+							block.getX(), block.getY(), block.getZ(),
+							ExLogEntry.worldToDimension(block.getWorld()));
 
-				ExLogDataHelper.performQuery(query, event.getPlayer());
+					ExLogDataHelper.performQuery(query, event.getPlayer());
+				} else {
+					event.getPlayer().sendMessage(
+							ChatColor.RED + "No permission.");
+				}
 			}
 		}
 	}

@@ -14,3 +14,31 @@ commands:
 permissions:
   exlog.*:
     description: Gives access to all exLog commands.
+    default: op
+    children:
+      exlog.command: true
+      exlog.command.*: true
+      exlog.query.*: true
+  exlog.command:
+    description: Gives access to the main /exlog command.
+    default: op
+  exlog.command.*:
+    description: Gives access to all /exlog subcommands.
+    default: op
+    children:
+      exlog.command.query: true
+  exlog.command.query:
+    description: Gives access to the /exlog query subcommand.
+    default: op
+  exlog.query.*:
+    description: Gives access to all exLog graphical query functions.
+    default: op
+    children:
+      exlog.query.stick: true
+      exlog.query.bone: true
+  exlog.query.stick:
+    description: Gives access to the exLog stick lookup.
+    default: op
+  exlog.query.bone:
+    description: Gives access to the exLog bone lookup.
+    default: op

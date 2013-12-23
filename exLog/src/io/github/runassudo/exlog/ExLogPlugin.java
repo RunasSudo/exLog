@@ -4,11 +4,13 @@ import io.github.runassudo.exlog.query.JSONDataQuery;
 import io.github.runassudo.exlog.util.ExLogDataHelper;
 
 import java.io.File;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -54,30 +56,24 @@ public class ExLogPlugin extends JavaPlugin {
 				sender.sendMessage("Created by RunasSudo.");
 				return true;
 			}
-			if (args[0].equalsIgnoreCase("test")) {
-				try {
-					ExLogEntry entry = new ExLogEntry();
-					entry.date = System.currentTimeMillis();
-					entry.x = 1;
-					entry.y = 2;
-					entry.z = 3;
-					entry.dimension = 4;
-					entry.player = "Player1";
-					entry.otherData.put("data1", "hello");
-					getDataProvider().appendData(entry);
-					sender.sendMessage("Added dummy entry.");
-				} catch (Exception e) {
-					getLogger().log(Level.SEVERE, "Failed to add entry.", e);
-					sender.sendMessage("Failed to add entry. Check logs.");
-				}
-				return true;
-			}
+
+			// Privileged Commands
 			if (args[0].equalsIgnoreCase("query")) {
-				String queryString = join(" ",
-						Arrays.copyOfRange(args, 1, args.length));
-				JSONObject queryObject = new JSONObject(queryString);
-				ExLogDataHelper.performQuery(new JSONDataQuery(queryObject),
-						sender);
+				if (sender.hasPermission("exlog.command.query")) {
+					String queryString = join(" ",
+							Arrays.copyOfRange(args, 1, args.length));
+					JSONObject queryObject = new JSONObject(queryString);
+					try {
+						ExLogDataHelper.performQuery(new JSONDataQuery(
+								queryObject), sender);
+					} catch (ParseException e) {
+						sender.sendMessage(ChatColor.RED
+								+ "Invalid date format.");
+					}
+
+				} else {
+					sender.sendMessage(ChatColor.RED + "No permission.");
+				}
 				return true;
 			}
 		}
