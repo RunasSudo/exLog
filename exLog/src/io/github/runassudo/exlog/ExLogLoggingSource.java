@@ -14,9 +14,14 @@ public abstract class ExLogLoggingSource extends JavaPlugin implements Listener 
 	}
 
 	public final static String defaultFormatEntry(ExLogEntry entry) {
-		return ChatColor.BLUE + entry.player + ChatColor.RESET + " @ "
-				+ entry.world + "(" + entry.x + "," + entry.y + "," + entry.z
-				+ ")";
+		return defaultFormatEntry(entry, "");
+	}
+
+	public final static String defaultFormatEntry(ExLogEntry entry,
+			String action) {
+		return (entry.rolledBack ? "[X] " : "") + ChatColor.BLUE + entry.player
+				+ ChatColor.RESET + action + " @ " + "(" + entry.x + ","
+				+ entry.y + "," + entry.z + ")";
 	}
 
 	/**

@@ -1,7 +1,6 @@
 package io.github.runassudo.exlog.defaults;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -24,24 +23,16 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 
 		switch (entry.otherData.get("type")) {
 		case "0":
-			return ChatColor.BLUE + entry.player + ChatColor.RESET + " break "
-					+ blockType + " @ " + entry.world + "(" + entry.x + ","
-					+ entry.y + "," + entry.z + ")";
+			return ExLogLoggingSource.defaultFormatEntry(entry, " break " + blockType);
 		case "1":
-			return ChatColor.BLUE + entry.player + ChatColor.RESET + " place "
-					+ blockType + " @ " + entry.world + "(" + entry.x + ","
-					+ entry.y + "," + entry.z + ")";
+			return ExLogLoggingSource.defaultFormatEntry(entry, " place " + blockType);
 		case "2":
-			return ChatColor.BLUE + entry.player + ChatColor.RESET + " scoop "
-					+ blockType + " @ " + entry.world + "(" + entry.x + ","
-					+ entry.y + "," + entry.z + ")";
+			return ExLogLoggingSource.defaultFormatEntry(entry, " scoop " + blockType);
 		case "3":
-			return ChatColor.BLUE + entry.player + ChatColor.RESET + " empty "
-					+ blockType + " @ " + entry.world + "(" + entry.x + ","
-					+ entry.y + "," + entry.z + ")";
+			return ExLogLoggingSource.defaultFormatEntry(entry, " empty " + blockType);
 		}
 
-		return ExLogLoggingSource.defaultFormatEntry(entry);
+		return null;
 	}
 
 	@Override

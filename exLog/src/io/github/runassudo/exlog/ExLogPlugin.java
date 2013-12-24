@@ -119,6 +119,7 @@ public class ExLogPlugin extends JavaPlugin {
 				} else {
 					sender.sendMessage(ChatColor.RED + "No permission.");
 				}
+				return true;
 			}
 		}
 		return false;

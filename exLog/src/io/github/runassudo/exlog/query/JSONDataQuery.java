@@ -34,11 +34,13 @@ public class JSONDataQuery extends ExLogDataQuery {
 			return false;
 		if (json.has("z") && json.getInt("z") != entry.z)
 			return false;
-		if (json.has("dimension")
-				&& !json.getString("world").equals(entry.world))
+		if (json.has("world") && !json.getString("world").equals(entry.world))
 			return false;
 		if (json.has("player")
 				&& !json.getString("player").equals(entry.player))
+			return false;
+		if (json.has("rolledBack")
+				&& json.getBoolean("rolledBack") != entry.rolledBack)
 			return false;
 
 		if (json.has("date") && json.getLong("date") != entry.date)
