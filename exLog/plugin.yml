@@ -27,8 +27,12 @@ permissions:
     default: op
     children:
       exlog.command.query: true
+      exlog.command.rollback: true
   exlog.command.query:
     description: Gives access to the /exlog query subcommand.
+    default: op
+  exlog.command.rollback:
+    description: Gives access to the /exlog rollback subcommand.
     default: op
   exlog.query.*:
     description: Gives access to all exLog graphical query functions.

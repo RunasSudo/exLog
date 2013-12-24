@@ -15,6 +15,7 @@ public class LocationDataQuery extends ExLogDataQuery {
 
 	@Override
 	public boolean matches(ExLogEntry entry) {
-		return (entry.x == x && entry.y == y && entry.z == z && entry.world == world);
+		return (entry.x == x && entry.y == y && entry.z == z && entry.world
+				.equals(world));
 	}
 }

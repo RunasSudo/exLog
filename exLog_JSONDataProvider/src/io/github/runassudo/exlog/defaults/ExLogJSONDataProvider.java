@@ -46,7 +46,6 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 
 		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
 			int fileVersion = Integer.parseInt(rdr.readLine());
-			rdr.close();
 
 			if (fileVersion != DATA_VERSION) {
 				getLogger().log(
@@ -76,6 +75,8 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 			throws Exception {
 		ArrayList<ExLogEntry> data = new ArrayList<ExLogEntry>();
 		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
+			rdr.readLine(); // version
+
 			String read = null;
 			while ((read = rdr.readLine()) != null) {
 				ExLogEntry entry = ExLogPlugin
@@ -118,9 +119,16 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 
 	@Override
 	public synchronized void removeData(ExLogDataQuery query) throws Exception {
-		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
+		File tmpFile = new File(getConfig().getString("dataFile") + ".tmp");
+		if (tmpFile.exists())
+			tmpFile.delete();
+		Files.copy(dataFile.toPath(), tmpFile.toPath());
+
+		try (BufferedReader rdr = new BufferedReader(new FileReader(tmpFile))) {
 			try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile,
 					false))) {
+				pw.println(rdr.readLine()); // version
+
 				String read = null;
 				while ((read = rdr.readLine()) != null) {
 					ExLogEntry entry = ExLogPlugin.JSONtoEntry(new JSONObject(
@@ -135,6 +143,8 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 			getLogger().log(Level.SEVERE, "Unable to read/write data file.", e);
 			throw e;
 		}
+
+		tmpFile.delete();
 	}
 
 	private void createFile() throws Exception {
