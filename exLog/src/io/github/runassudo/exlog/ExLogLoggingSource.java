@@ -15,8 +15,20 @@ public abstract class ExLogLoggingSource extends JavaPlugin implements Listener 
 
 	public final static String defaultFormatEntry(ExLogEntry entry) {
 		return ChatColor.BLUE + entry.player + ChatColor.RESET + " @ "
-				+ entry.dimension + "(" + entry.x + "," + entry.y + ","
-				+ entry.z + ")";
+				+ entry.world + "(" + entry.x + "," + entry.y + "," + entry.z
+				+ ")";
+	}
+
+	/**
+	 * Attempts to rollback the specified entry.
+	 * 
+	 * @param entry
+	 *            The entry to rollback.
+	 * @return <code>true</code> if rollback was successful, <code>false</code>
+	 *         otherwise.
+	 */
+	public boolean rollbackEntry(ExLogEntry entry) {
+		return false;
 	}
 
 	@Override

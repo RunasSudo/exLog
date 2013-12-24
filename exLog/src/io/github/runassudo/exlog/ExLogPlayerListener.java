@@ -21,8 +21,8 @@ public class ExLogPlayerListener implements Listener {
 					Block block = event.getClickedBlock();
 
 					LocationDataQuery query = new LocationDataQuery(
-							block.getX(), block.getY(), block.getZ(),
-							ExLogEntry.worldToDimension(block.getWorld()));
+							block.getX(), block.getY(), block.getZ(), block
+									.getWorld().getName());
 
 					ExLogDataHelper.performQuery(query, event.getPlayer());
 				} else {
@@ -36,8 +36,8 @@ public class ExLogPlayerListener implements Listener {
 							event.getBlockFace());
 
 					LocationDataQuery query = new LocationDataQuery(
-							block.getX(), block.getY(), block.getZ(),
-							ExLogEntry.worldToDimension(block.getWorld()));
+							block.getX(), block.getY(), block.getZ(), block
+									.getWorld().getName());
 
 					ExLogDataHelper.performQuery(query, event.getPlayer());
 				} else {

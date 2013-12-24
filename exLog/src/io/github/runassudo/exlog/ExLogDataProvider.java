@@ -42,6 +42,8 @@ public abstract class ExLogDataProvider extends JavaPlugin {
 	public abstract void appendData(ArrayList<ExLogEntry> data)
 			throws Exception;
 
+	public abstract void removeData(ExLogDataQuery query) throws Exception;
+
 	/**
 	 * Convenience method to add a single <code>ExLogEntry</code> to the data
 	 * source.

@@ -10,14 +10,11 @@ import io.github.runassudo.exlog.ExLogPlugin;
 public class JSONDataQuery extends ExLogDataQuery {
 	JSONObject json;
 
-	long date, dateMin, dateMax;
+	long dateMin, dateMax;
 
 	public JSONDataQuery(JSONObject json) throws ParseException {
 		this.json = json;
 
-		if (json.has("date"))
-			date = ExLogPlugin.getInstance().getDateFormat()
-					.parse(json.getString("date")).getTime();
 		if (json.has("dateMin"))
 			dateMin = ExLogPlugin.getInstance().getDateFormat()
 					.parse(json.getString("dateMin")).getTime();
@@ -38,13 +35,13 @@ public class JSONDataQuery extends ExLogDataQuery {
 		if (json.has("z") && json.getInt("z") != entry.z)
 			return false;
 		if (json.has("dimension")
-				&& json.getInt("dimension") != entry.dimension)
+				&& !json.getString("world").equals(entry.world))
 			return false;
 		if (json.has("player")
 				&& !json.getString("player").equals(entry.player))
 			return false;
 
-		if (json.has("date") && date != entry.date)
+		if (json.has("date") && json.getLong("date") != entry.date)
 			return false;
 		if (json.has("dateMin") && entry.date < dateMin)
 			return false;

@@ -1,6 +1,8 @@
 package io.github.runassudo.exlog.defaults;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -20,24 +22,50 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 	public String formatEntry(ExLogEntry entry) {
 		String blockType = entry.otherData.get("blockType");
 
-		if (entry.otherData.get("type").equals("0"))
+		switch (entry.otherData.get("type")) {
+		case "0":
 			return ChatColor.BLUE + entry.player + ChatColor.RESET + " break "
-					+ blockType + " @ " + entry.dimension + "(" + entry.x + ","
+					+ blockType + " @ " + entry.world + "(" + entry.x + ","
 					+ entry.y + "," + entry.z + ")";
-		if (entry.otherData.get("type").equals("1"))
+		case "1":
 			return ChatColor.BLUE + entry.player + ChatColor.RESET + " place "
-					+ blockType + " @ " + entry.dimension + "(" + entry.x + ","
+					+ blockType + " @ " + entry.world + "(" + entry.x + ","
 					+ entry.y + "," + entry.z + ")";
-		if (entry.otherData.get("type").equals("2"))
+		case "2":
 			return ChatColor.BLUE + entry.player + ChatColor.RESET + " scoop "
-					+ blockType + " @ " + entry.dimension + "(" + entry.x + ","
+					+ blockType + " @ " + entry.world + "(" + entry.x + ","
 					+ entry.y + "," + entry.z + ")";
-		if (entry.otherData.get("type").equals("3"))
+		case "3":
 			return ChatColor.BLUE + entry.player + ChatColor.RESET + " empty "
-					+ blockType + " @ " + entry.dimension + "(" + entry.x + ","
+					+ blockType + " @ " + entry.world + "(" + entry.x + ","
 					+ entry.y + "," + entry.z + ")";
+		}
 
 		return ExLogLoggingSource.defaultFormatEntry(entry);
+	}
+
+	@Override
+	public boolean rollbackEntry(ExLogEntry entry) {
+		switch (entry.otherData.get("type")) {
+		case "0":
+			Bukkit.getWorld(entry.world)
+					.getBlockAt(entry.x, entry.y, entry.z)
+					.setType(Material.valueOf(entry.otherData.get("blockType")));
+			return true;
+		case "1":
+			Bukkit.getWorld(entry.world).getBlockAt(entry.x, entry.y, entry.z)
+					.setType(Material.AIR);
+			return true;
+		case "2":
+			Bukkit.getWorld(entry.world).getBlockAt(entry.x, entry.y, entry.z)
+					.setType(Material.WATER);
+			return true;
+		case "3":
+			Bukkit.getWorld(entry.world).getBlockAt(entry.x, entry.y, entry.z)
+					.setType(Material.AIR);
+			return true;
+		}
+		return false;
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)

@@ -5,13 +5,17 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.logging.Level;
 
 import org.json.JSONObject;
 
 import io.github.runassudo.exlog.ExLogDataProvider;
 import io.github.runassudo.exlog.ExLogEntry;
+import io.github.runassudo.exlog.ExLogPlugin;
 import io.github.runassudo.exlog.query.ExLogDataQuery;
 
 /**
@@ -22,53 +26,60 @@ import io.github.runassudo.exlog.query.ExLogDataQuery;
  * 
  */
 public class ExLogJSONDataProvider extends ExLogDataProvider {
-	public static final int DATA_VERSION = 1;
+	public static final int DATA_VERSION = 2;
+	private File dataFile;
 
 	@Override
-	public ArrayList<ExLogEntry> readData(ExLogDataQuery query)
-			throws Exception {
-		File dataFile = new File(getConfig().getString("dataFile"));
+	public void onEnable() {
+		super.onEnable();
+
+		dataFile = new File(getConfig().getString("dataFile"));
 		if (!dataFile.exists()) {
 			getLogger().log(Level.WARNING,
 					"No existing data file. An empty one will be created.");
-			createFile();
+			try {
+				createFile();
+			} catch (Exception e) {
+				getLogger().log(Level.SEVERE, "Unable to create new file.", e);
+			}
 		}
 
-		ArrayList<ExLogEntry> data = new ArrayList<ExLogEntry>();
-		BufferedReader rdr = null;
-		try {
-			rdr = new BufferedReader(new FileReader(dataFile));
-
+		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
 			int fileVersion = Integer.parseInt(rdr.readLine());
+			rdr.close();
+
 			if (fileVersion != DATA_VERSION) {
 				getLogger().log(
 						Level.WARNING,
 						"Data file has unsupported version " + fileVersion
-								+ ".");
+								+ ". Making backup.");
+
+				try {
+					File backupFile = new File(getConfig()
+							.getString("dataFile") + ".bak");
+					if (backupFile.exists())
+						backupFile.delete();
+					Files.copy(dataFile.toPath(), backupFile.toPath());
+				} catch (Exception e) {
+					getLogger().log(Level.WARNING,
+							"Unable to backup data file.", e);
+				}
 			}
 
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Unable to read data file.", e);
+		}
+	}
+
+	@Override
+	public synchronized ArrayList<ExLogEntry> readData(ExLogDataQuery query)
+			throws Exception {
+		ArrayList<ExLogEntry> data = new ArrayList<ExLogEntry>();
+		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
 			String read = null;
 			while ((read = rdr.readLine()) != null) {
-				ExLogEntry entry = new ExLogEntry();
-				JSONObject jsonEntry = new JSONObject(read);
-
-				entry.origin = jsonEntry.getString("origin");
-				entry.date = jsonEntry.getLong("date");
-				entry.x = jsonEntry.getInt("x");
-				entry.y = jsonEntry.getInt("y");
-				entry.z = jsonEntry.getInt("z");
-				entry.dimension = jsonEntry.getInt("dimension");
-				entry.player = jsonEntry.getString("player");
-
-				if (jsonEntry.has("otherData")) {
-					JSONObject jsonOtherData = jsonEntry
-							.getJSONObject("otherData");
-
-					for (Object objectKey : jsonOtherData.keySet()) {
-						String key = (String) objectKey;
-						entry.otherData.put(key, jsonOtherData.getString(key));
-					}
-				}
+				ExLogEntry entry = ExLogPlugin
+						.JSONtoEntry(new JSONObject(read));
 
 				if (query.matches(entry)) {
 					data.add(entry);
@@ -77,44 +88,24 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to read data file.", e);
 			throw e;
-		} finally {
-			rdr.close();
 		}
+
+		Collections.sort(data, new Comparator<ExLogEntry>() {
+			@Override
+			public int compare(ExLogEntry arg0, ExLogEntry arg1) {
+				return (int) (arg0.date - arg1.date);
+			}
+		});
 
 		return data;
 	}
 
 	@Override
-	public void appendData(ArrayList<ExLogEntry> data) throws Exception {
-		File dataFile = new File(getConfig().getString("dataFile"));
-		if (!dataFile.exists()) {
-			createFile();
-		}
-
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter(dataFile, true));
-
+	public synchronized void appendData(ArrayList<ExLogEntry> data)
+			throws Exception {
+		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
 			for (ExLogEntry entry : data) {
-				JSONObject jsonEntry = new JSONObject();
-
-				jsonEntry.put("origin", entry.origin);
-				jsonEntry.put("date", entry.date);
-				jsonEntry.put("x", entry.x);
-				jsonEntry.put("y", entry.y);
-				jsonEntry.put("z", entry.z);
-				jsonEntry.put("dimension", entry.dimension);
-				jsonEntry.put("player", entry.player);
-
-				if (entry.otherData.size() > 0) {
-					JSONObject jsonOtherData = new JSONObject();
-
-					for (String key : entry.otherData.keySet()) {
-						jsonOtherData.put(key, entry.otherData.get(key));
-					}
-
-					jsonEntry.put("otherData", jsonOtherData);
-				}
+				JSONObject jsonEntry = ExLogPlugin.entryToJSON(entry);
 
 				jsonEntry.write(pw);
 				pw.println();
@@ -122,20 +113,33 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 		} catch (Exception e) {
 			getLogger().log(Level.SEVERE, "Unable to write data file.", e);
 			throw e;
-		} finally {
-			pw.close();
+		}
+	}
+
+	@Override
+	public synchronized void removeData(ExLogDataQuery query) throws Exception {
+		try (BufferedReader rdr = new BufferedReader(new FileReader(dataFile))) {
+			try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile,
+					false))) {
+				String read = null;
+				while ((read = rdr.readLine()) != null) {
+					ExLogEntry entry = ExLogPlugin.JSONtoEntry(new JSONObject(
+							read));
+
+					if (!query.matches(entry)) {
+						pw.println(read);
+					}
+				}
+			}
+		} catch (Exception e) {
+			getLogger().log(Level.SEVERE, "Unable to read/write data file.", e);
+			throw e;
 		}
 	}
 
 	private void createFile() throws Exception {
-		File dataFile = new File(getConfig().getString("dataFile"));
-
-		PrintWriter pw = null;
-		try {
-			pw = new PrintWriter(new FileWriter(dataFile, true));
+		try (PrintWriter pw = new PrintWriter(new FileWriter(dataFile, true))) {
 			pw.println(DATA_VERSION);
-		} finally {
-			pw.close();
 		}
 	}
 }
