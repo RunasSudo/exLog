@@ -5,7 +5,6 @@ import io.github.runassudo.exlog.util.ExLogDataHelper;
 import io.github.runassudo.exlog.util.ExLogQueryCallback;
 
 import java.io.File;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -16,7 +15,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 public class ExLogPlugin extends JavaPlugin {
 	// ----------------------------------------------------------------
@@ -71,13 +71,17 @@ public class ExLogPlugin extends JavaPlugin {
 
 					String queryString = join(" ",
 							Arrays.copyOfRange(args, 1, args.length));
-					JSONObject queryObject = new JSONObject(queryString);
+
 					try {
+						JSONObject queryObject = (JSONObject) new JSONParser()
+								.parse(queryString);
 						ExLogDataHelper.performQuery(new JSONDataQuery(
 								queryObject), sender);
-					} catch (ParseException e) {
+					} catch (java.text.ParseException e) {
 						sender.sendMessage(ChatColor.RED
 								+ "Invalid date format.");
+					} catch (org.json.simple.parser.ParseException e) {
+						sender.sendMessage(ChatColor.RED + "Invalid query.");
 					}
 				} else {
 					sender.sendMessage(ChatColor.RED + "No permission.");
@@ -94,26 +98,32 @@ public class ExLogPlugin extends JavaPlugin {
 						String queryString = join(" ",
 								Arrays.copyOfRange(args, 2, args.length));
 
-						JSONObject queryObject = new JSONObject(queryString);
 						try {
+							JSONObject queryObject = (JSONObject) new JSONParser()
+									.parse(queryString);
 							ExLogDataHelper.performQuery(new JSONDataQuery(
 									queryObject), new RollbackCallback(sender));
-						} catch (ParseException e) {
+						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
 									+ "Invalid date format.");
+						} catch (org.json.simple.parser.ParseException e) {
+							sender.sendMessage(ChatColor.RED + "Invalid query.");
 						}
 					} else {
 						String queryString = join(" ",
 								Arrays.copyOfRange(args, 1, args.length));
 
-						JSONObject queryObject = new JSONObject(queryString);
 						try {
+							JSONObject queryObject = (JSONObject) new JSONParser()
+									.parse(queryString);
 							ExLogDataHelper.performQuery(new JSONDataQuery(
 									queryObject), sender);
 							sender.sendMessage("If happy with the results, use /exlog rollback y [query] to perform rollback.");
-						} catch (ParseException e) {
+						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
 									+ "Invalid date format.");
+						} catch (org.json.simple.parser.ParseException e) {
+							sender.sendMessage(ChatColor.RED + "Invalid query.");
 						}
 					}
 				} else {
@@ -164,6 +174,7 @@ public class ExLogPlugin extends JavaPlugin {
 		return dateFormat;
 	}
 
+	@SuppressWarnings("unchecked")
 	public static JSONObject entryToJSON(ExLogEntry entry) {
 		JSONObject jsonEntry = new JSONObject();
 
@@ -192,21 +203,21 @@ public class ExLogPlugin extends JavaPlugin {
 	public static ExLogEntry JSONtoEntry(JSONObject jsonEntry) {
 		ExLogEntry entry = new ExLogEntry();
 
-		entry.origin = jsonEntry.getString("origin");
-		entry.date = jsonEntry.getLong("date");
-		entry.x = jsonEntry.getInt("x");
-		entry.y = jsonEntry.getInt("y");
-		entry.z = jsonEntry.getInt("z");
-		entry.world = jsonEntry.getString("world");
-		entry.player = jsonEntry.getString("player");
-		entry.rolledBack = jsonEntry.getBoolean("rolledBack");
+		entry.origin = (String) jsonEntry.get("origin");
+		entry.date = (Long) jsonEntry.get("date");
+		entry.x = (Integer) jsonEntry.get("x");
+		entry.y = (Integer) jsonEntry.get("y");
+		entry.z = (Integer) jsonEntry.get("z");
+		entry.world = (String) jsonEntry.get("world");
+		entry.player = (String) jsonEntry.get("player");
+		entry.rolledBack = (Boolean) jsonEntry.get("rolledBack");
 
-		if (jsonEntry.has("otherData")) {
-			JSONObject jsonOtherData = jsonEntry.getJSONObject("otherData");
+		if (jsonEntry.containsKey("otherData")) {
+			JSONObject jsonOtherData = (JSONObject) jsonEntry.get("otherData");
 
 			for (Object objectKey : jsonOtherData.keySet()) {
 				String key = (String) objectKey;
-				entry.otherData.put(key, jsonOtherData.getString(key));
+				entry.otherData.put(key, (String) jsonOtherData.get(key));
 			}
 		}
 

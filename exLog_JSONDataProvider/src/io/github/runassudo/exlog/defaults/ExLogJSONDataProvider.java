@@ -11,7 +11,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.logging.Level;
 
-import org.json.JSONObject;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 
 import io.github.runassudo.exlog.ExLogDataProvider;
 import io.github.runassudo.exlog.ExLogEntry;
@@ -79,8 +80,9 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 
 			String read = null;
 			while ((read = rdr.readLine()) != null) {
-				ExLogEntry entry = ExLogPlugin
-						.JSONtoEntry(new JSONObject(read));
+				JSONObject readObject = (JSONObject) new JSONParser()
+						.parse(read);
+				ExLogEntry entry = ExLogPlugin.JSONtoEntry(readObject);
 
 				if (query.matches(entry)) {
 					data.add(entry);
@@ -108,7 +110,7 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 			for (ExLogEntry entry : data) {
 				JSONObject jsonEntry = ExLogPlugin.entryToJSON(entry);
 
-				jsonEntry.write(pw);
+				jsonEntry.writeJSONString(pw);
 				pw.println();
 			}
 		} catch (Exception e) {
@@ -131,8 +133,9 @@ public class ExLogJSONDataProvider extends ExLogDataProvider {
 
 				String read = null;
 				while ((read = rdr.readLine()) != null) {
-					ExLogEntry entry = ExLogPlugin.JSONtoEntry(new JSONObject(
-							read));
+					JSONObject readObject = (JSONObject) new JSONParser()
+							.parse(read);
+					ExLogEntry entry = ExLogPlugin.JSONtoEntry(readObject);
 
 					if (!query.matches(entry)) {
 						pw.println(read);
