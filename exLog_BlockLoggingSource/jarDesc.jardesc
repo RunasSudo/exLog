@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <jardesc>
     <jar path="/home/runassudo/Games/BukkitTesting/plugins/exLog_Block.jar"/>
-    <options buildIfNeeded="true" compress="true" descriptionLocation="/exLog_BlockLoggingSource/jarDesc.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="false" storeRefactorings="false" useSourceFolders="false"/>
+    <options buildIfNeeded="true" compress="true" descriptionLocation="/exLog_BlockLoggingSource/jarDesc.jardesc" exportErrors="true" exportWarnings="true" includeDirectoryEntries="false" overwrite="true" saveDescription="true" storeRefactorings="false" useSourceFolders="false"/>
     <storedRefactorings deprecationInfo="true" structuralOnly="false"/>
     <selectedProjects/>
     <manifest generateManifest="true" manifestLocation="" manifestVersion="1.0" reuseManifest="false" saveManifest="false" usesManifest="true">
@@ -12,10 +12,7 @@
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
         <javaElement handleIdentifier="=exLog_BlockLoggingSource/src"/>
-        <file path="/exLog_BlockLoggingSource/.project"/>
-        <file path="/exLog_BlockLoggingSource/.gitignore"/>
         <file path="/exLog_BlockLoggingSource/plugin.yml"/>
         <file path="/exLog_BlockLoggingSource/config.yml"/>
-        <file path="/exLog_BlockLoggingSource/.classpath"/>
     </selectedElements>
 </jardesc>

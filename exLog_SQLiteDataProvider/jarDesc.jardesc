@@ -11,11 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/exLog_SQLiteDataProvider/.project"/>
         <file path="/exLog_SQLiteDataProvider/config.yml"/>
-        <javaElement handleIdentifier="=exLog_SQLiteDataProvider/src"/>
-        <file path="/exLog_SQLiteDataProvider/.gitignore"/>
-        <file path="/exLog_SQLiteDataProvider/.classpath"/>
         <file path="/exLog_SQLiteDataProvider/plugin.yml"/>
+        <javaElement handleIdentifier="=exLog_SQLiteDataProvider/src"/>
     </selectedElements>
 </jardesc>

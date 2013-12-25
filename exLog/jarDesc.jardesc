@@ -11,12 +11,8 @@
         </sealing>
     </manifest>
     <selectedElements exportClassFiles="true" exportJavaFiles="false" exportOutputFolder="false">
-        <file path="/exLog/.classpath"/>
-        <file path="/exLog/.project"/>
-        <file path="/exLog/plugin.yml"/>
-        <javaElement handleIdentifier="=exLog/json"/>
-        <javaElement handleIdentifier="=exLog/src"/>
         <file path="/exLog/config.yml"/>
-        <file path="/exLog/.gitignore"/>
+        <file path="/exLog/plugin.yml"/>
+        <javaElement handleIdentifier="=exLog/src"/>
     </selectedElements>
 </jardesc>
