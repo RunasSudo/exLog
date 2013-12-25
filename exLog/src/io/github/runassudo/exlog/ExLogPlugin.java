@@ -205,9 +205,9 @@ public class ExLogPlugin extends JavaPlugin {
 
 		entry.origin = (String) jsonEntry.get("origin");
 		entry.date = (Long) jsonEntry.get("date");
-		entry.x = (Integer) jsonEntry.get("x");
-		entry.y = (Integer) jsonEntry.get("y");
-		entry.z = (Integer) jsonEntry.get("z");
+		entry.x = ((Long) jsonEntry.get("x")).intValue();
+		entry.y = ((Long) jsonEntry.get("y")).intValue();
+		entry.z = ((Long) jsonEntry.get("z")).intValue();
 		entry.world = (String) jsonEntry.get("world");
 		entry.player = (String) jsonEntry.get("player");
 		entry.rolledBack = (Boolean) jsonEntry.get("rolledBack");
