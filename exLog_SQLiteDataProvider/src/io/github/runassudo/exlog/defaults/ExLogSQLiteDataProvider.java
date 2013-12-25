@@ -7,21 +7,28 @@ import io.github.runassudo.exlog.query.ExLogDataQuery;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.ArrayList;
+import java.util.logging.Level;
 
 public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 	@Override
 	public void onEnable() {
 		super.onEnable();
+	}
 
-		Connection c = null;
-		try {
-			Class.forName("org.sqlite.JDBC");
-			c = DriverManager.getConnection("jdbc:sqlite:"
-					+ getConfig().getString("dataFile"));
-			System.out.println("Opened database successfully");
-		} catch (Exception e) {
-			System.err.println(e.getClass().getName() + ": " + e.getMessage());
+	private Connection sqlConnection;
+
+	private Connection getConnection() {
+		if (sqlConnection == null) {
+			try {
+				Class.forName("org.sqlite.JDBC");
+				sqlConnection = DriverManager.getConnection("jdbc:sqlite:"
+						+ getConfig().getString("dataFile"));
+			} catch (Exception e) {
+				getLogger().log(Level.SEVERE, "Unable to open database.", e);
+			}
 		}
+
+		return sqlConnection;
 	}
 
 	@Override
