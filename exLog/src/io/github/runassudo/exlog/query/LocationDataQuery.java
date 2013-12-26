@@ -18,4 +18,9 @@ public class LocationDataQuery extends ExLogDataQuery {
 		return (entry.x == x && entry.y == y && entry.z == z && entry.world
 				.equals(world));
 	}
+
+	@Override
+	public String toSQL() {
+		return " WHERE x = " + x + " AND y = " + y + " AND z = " + z;
+	}
 }

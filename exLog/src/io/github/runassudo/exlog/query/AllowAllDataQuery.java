@@ -7,4 +7,9 @@ public class AllowAllDataQuery extends ExLogDataQuery {
 	public boolean matches(ExLogEntry entry) {
 		return true;
 	}
+
+	@Override
+	public String toSQL() {
+		return "";
+	}
 }

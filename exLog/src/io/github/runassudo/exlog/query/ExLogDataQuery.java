@@ -11,4 +11,6 @@ public abstract class ExLogDataQuery {
 	 * @return <code>true</code> if the specified Entry matches the Query.
 	 */
 	public abstract boolean matches(ExLogEntry entry);
+
+	public abstract String toSQL();
 }
