@@ -131,6 +131,49 @@ public class ExLogPlugin extends JavaPlugin {
 				}
 				return true;
 			}
+			if (args[0].equalsIgnoreCase("remove")
+					|| args[0].equalsIgnoreCase("rm")) {
+				if (sender.hasPermission("exlog.command.remove")) {
+					if (args.length < 2)
+						return false;
+
+					if (args[1].equalsIgnoreCase("y")) {
+						String queryString = join(" ",
+								Arrays.copyOfRange(args, 2, args.length));
+
+						try {
+							JSONObject queryObject = (JSONObject) new JSONParser()
+									.parse(queryString);
+							ExLogDataHelper.performQuery(new JSONDataQuery(
+									queryObject), new RemoveCallback(sender));
+						} catch (java.text.ParseException e) {
+							sender.sendMessage(ChatColor.RED
+									+ "Invalid date format.");
+						} catch (org.json.simple.parser.ParseException e) {
+							sender.sendMessage(ChatColor.RED + "Invalid query.");
+						}
+					} else {
+						String queryString = join(" ",
+								Arrays.copyOfRange(args, 1, args.length));
+
+						try {
+							JSONObject queryObject = (JSONObject) new JSONParser()
+									.parse(queryString);
+							ExLogDataHelper.performQuery(new JSONDataQuery(
+									queryObject), sender);
+							sender.sendMessage("If happy with the results, use /exlog remove y [query] to perform removal.");
+						} catch (java.text.ParseException e) {
+							sender.sendMessage(ChatColor.RED
+									+ "Invalid date format.");
+						} catch (org.json.simple.parser.ParseException e) {
+							sender.sendMessage(ChatColor.RED + "Invalid query.");
+						}
+					}
+				} else {
+					sender.sendMessage(ChatColor.RED + "No permission.");
+				}
+				return true;
+			}
 		}
 		return false;
 	}
@@ -251,6 +294,40 @@ public class ExLogPlugin extends JavaPlugin {
 							new JSONDataQuery(entryToJSON(entry)));
 					entry.rolledBack = true;
 					getDataProvider().appendData(entry);
+				}
+			}
+		}
+
+		@Override
+		public void failed(Exception e) {
+			sender.sendMessage(ChatColor.RED + "Unable to perform query.");
+		}
+	}
+
+	class RemoveCallback extends ExLogQueryCallback {
+		CommandSender sender;
+
+		public RemoveCallback(CommandSender sender) {
+			this.sender = sender;
+		}
+
+		@Override
+		public void success(ArrayList<ExLogEntry> results) throws Exception {
+			for (ExLogEntry entry : results) {
+				if (!entry.rolledBack) {
+					ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
+							.getPluginManager().getPlugin(entry.origin);
+
+					if (originPlugin != null) {
+						boolean successful = originPlugin.rollbackEntry(entry);
+						if (!successful)
+							sender.sendMessage(ChatColor.RED
+									+ "Could not roll back entry at "
+									+ entry.date + ".");
+					}
+
+					getDataProvider().removeData(
+							new JSONDataQuery(entryToJSON(entry)));
 				}
 			}
 		}

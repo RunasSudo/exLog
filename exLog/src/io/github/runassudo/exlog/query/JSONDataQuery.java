@@ -28,12 +28,14 @@ public class JSONDataQuery extends ExLogDataQuery {
 		if (json.containsKey("origin")
 				&& !json.get("origin").equals(entry.origin))
 			return false;
-		if (json.containsKey("x") && !json.get("x").equals(entry.x))
+
+		if (!testInt("x", entry.x))
 			return false;
-		if (json.containsKey("y") && !json.get("y").equals(entry.y))
+		if (!testInt("y", entry.y))
 			return false;
-		if (json.containsKey("z") && !json.get("z").equals(entry.z))
+		if (!testInt("z", entry.z))
 			return false;
+
 		if (json.containsKey("world") && !json.get("world").equals(entry.world))
 			return false;
 		if (json.containsKey("player")
@@ -58,6 +60,20 @@ public class JSONDataQuery extends ExLogDataQuery {
 					return false;
 			}
 		}
+
+		return true;
+	}
+
+	private boolean testInt(String test, int value) {
+		if (json.containsKey(test)
+				&& Integer.parseInt((String) json.get(test)) != value)
+			return false;
+		if (json.containsKey(test + "Min")
+				&& value < Integer.parseInt((String) json.get(test + "Min")))
+			return false;
+		if (json.containsKey(test + "Max")
+				&& value > Integer.parseInt((String) json.get(test + "Max")))
+			return false;
 
 		return true;
 	}

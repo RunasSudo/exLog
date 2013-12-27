@@ -34,6 +34,9 @@ permissions:
   exlog.command.rollback:
     description: Gives access to the /exlog rollback subcommand.
     default: op
+  exlog.command.remove:
+    description: Gives access to the /exlog remove subcommand.
+    default: op
   exlog.query.*:
     description: Gives access to all exLog graphical query functions.
     default: op
