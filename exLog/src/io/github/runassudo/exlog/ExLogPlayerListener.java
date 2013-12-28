@@ -13,10 +13,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 public class ExLogPlayerListener implements Listener {
+	private Material STICK = Material.valueOf(ExLogPlugin.getInstance()
+			.getConfig().getString("stickTool"));
+	private Material BONE = Material.valueOf(ExLogPlugin.getInstance()
+			.getConfig().getString("boneTool"));
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onPlayerInteract(PlayerInteractEvent event) {
 		if (event.getAction() == Action.RIGHT_CLICK_BLOCK && event.hasItem()) {
-			if (event.getItem().getType() == Material.STICK) {
+			if (event.getItem().getType() == STICK) {
 				if (event.getPlayer().hasPermission("exlog.query.stick")) {
 					Block block = event.getClickedBlock();
 
@@ -30,7 +35,7 @@ public class ExLogPlayerListener implements Listener {
 							ChatColor.RED + "No permission.");
 				}
 			}
-			if (event.getItem().getType() == Material.BONE) {
+			if (event.getItem().getType() == BONE) {
 				if (event.getPlayer().hasPermission("exlog.query.bone")) {
 					Block block = event.getClickedBlock().getRelative(
 							event.getBlockFace());
