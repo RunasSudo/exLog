@@ -29,6 +29,8 @@ public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 			+ ") VALUES(" + "?, ?, ?, ?, ?, ?, ?, ?, ?" + ")";
 
 	private static final String sqlReadEntry = "SELECT * FROM exlog";
+	
+	private static final String sqlDeleteEntry = "DELETE FROM exlog";
 
 	@Override
 	public void onEnable() {
@@ -103,6 +105,8 @@ public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 
 	@Override
 	public void removeData(ExLogDataQuery query) throws Exception {
+		Statement statement = getConnection().createStatement();
+		statement.executeUpdate(sqlDeleteEntry + query.toSQL());
 	}
 
 	private void createTable() throws Exception {
