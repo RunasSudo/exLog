@@ -346,14 +346,6 @@ public class ExLogPlugin extends JavaPlugin {
 					ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
 							.getPluginManager().getPlugin(entry.origin);
 
-					if (originPlugin != null) {
-						boolean successful = originPlugin.rollbackEntry(entry);
-						if (!successful)
-							sender.sendMessage(ChatColor.RED
-									+ "Could not roll back entry at "
-									+ entry.date + ".");
-					}
-
 					getDataProvider().removeData(
 							new JSONDataQuery(entryToJSON(entry)));
 				}
