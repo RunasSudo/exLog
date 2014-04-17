@@ -344,10 +344,8 @@ public class ExLogPlugin extends JavaPlugin {
 		@Override
 		public void success(ArrayList<ExLogEntry> results) throws Exception {
 			for (ExLogEntry entry : results) {
-				if (!entry.rolledBack) {
-					getDataProvider().removeData(
-							new JSONDataQuery(entryToJSON(entry)));
-				}
+				getDataProvider().removeData(
+						new JSONDataQuery(entryToJSON(entry)));
 			}
 		}
 
