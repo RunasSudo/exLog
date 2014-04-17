@@ -13,7 +13,7 @@ public class JSONNonRBDataQuery extends JSONDataQuery {
 
 	@Override
 	public boolean matches(ExLogEntry entry) {
-		if (json.get("rolledBack").equals(true))
+		if (entry.rolledBack)
 			return false;
 
 		return super.matches(entry);
