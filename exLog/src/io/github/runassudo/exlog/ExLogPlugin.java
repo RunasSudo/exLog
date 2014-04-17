@@ -128,9 +128,8 @@ public class ExLogPlugin extends JavaPlugin {
 						try {
 							JSONObject queryObject = (JSONObject) new JSONParser()
 									.parse(queryString);
-							ExLogDataHelper.performQuery(
-									new JSONNonRBDataQuery(queryObject),
-									new RollbackCallback(sender));
+							ExLogDataHelper.performQuery(new JSONDataQuery(
+									queryObject), new RollbackCallback(sender));
 						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
 									+ "Invalid date format.");
@@ -144,8 +143,9 @@ public class ExLogPlugin extends JavaPlugin {
 						try {
 							JSONObject queryObject = (JSONObject) new JSONParser()
 									.parse(queryString);
-							ExLogDataHelper.performQuery(new JSONDataQuery(
-									queryObject), sender, false);
+							ExLogDataHelper.performQuery(
+									new JSONNonRBDataQuery(queryObject),
+									sender, false);
 							sender.sendMessage("If happy with the results, use /exlog rollback y [query] to perform rollback.");
 						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
