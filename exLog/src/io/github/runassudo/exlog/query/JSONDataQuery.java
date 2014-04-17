@@ -68,14 +68,13 @@ public class JSONDataQuery extends ExLogDataQuery {
 	}
 
 	private boolean testInt(String test, int value) {
-		if (json.containsKey(test)
-				&& Integer.parseInt((String) json.get(test)) != value)
+		if (json.containsKey(test) && ((int) json.get(test)) != value)
 			return false;
 		if (json.containsKey(test + "Min")
-				&& value < Integer.parseInt((String) json.get(test + "Min")))
+				&& value < ((int) json.get(test + "Min")))
 			return false;
 		if (json.containsKey(test + "Max")
-				&& value > Integer.parseInt((String) json.get(test + "Max")))
+				&& value > ((int) json.get(test + "Max")))
 			return false;
 
 		return true;
