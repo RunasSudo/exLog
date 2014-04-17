@@ -9,17 +9,19 @@ import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public abstract class ExLogLoggingSource extends JavaPlugin implements Listener {
-	public String formatEntry(ExLogEntry entry) {
-		return ExLogLoggingSource.defaultFormatEntry(entry);
-	}
-
-	public final static String defaultFormatEntry(ExLogEntry entry) {
-		return defaultFormatEntry(entry, "");
+	public String formatEntry(ExLogEntry entry, boolean useUUID) {
+		return ExLogLoggingSource.defaultFormatEntry(entry, useUUID);
 	}
 
 	public final static String defaultFormatEntry(ExLogEntry entry,
-			String action) {
+			boolean useUUID) {
+		return defaultFormatEntry(entry, useUUID, "");
+	}
+
+	public final static String defaultFormatEntry(ExLogEntry entry,
+			boolean useUUID, String action) {
 		return (entry.rolledBack ? "[X] " : "") + ChatColor.BLUE + entry.player
+				+ (useUUID ? " (" + entry.uuid.toString() + ")" : "")
 				+ ChatColor.RESET + action + " @ " + "(" + entry.x + ","
 				+ entry.y + "," + entry.z + ")";
 	}

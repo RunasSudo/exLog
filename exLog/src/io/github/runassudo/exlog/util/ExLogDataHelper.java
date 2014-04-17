@@ -136,7 +136,7 @@ public class ExLogDataHelper {
 	 *            The player to relay the result back to.
 	 */
 	public static void performQuery(final ExLogDataQuery query,
-			final CommandSender sender) {
+			final CommandSender sender, final boolean useUUID) {
 		performQuery(query, new ExLogQueryCallback() {
 			@Override
 			public void success(ArrayList<ExLogEntry> results) throws Exception {
@@ -148,11 +148,11 @@ public class ExLogDataHelper {
 
 					String prettyDate = ExLogPlugin.getInstance()
 							.getDateFormat().format(new Date(entry.date));
-					String message = ExLogLoggingSource
-							.defaultFormatEntry(entry);
+					String message = ExLogLoggingSource.defaultFormatEntry(
+							entry, useUUID);
 
 					if (originPlugin != null)
-						message = originPlugin.formatEntry(entry);
+						message = originPlugin.formatEntry(entry, useUUID);
 
 					sender.sendMessage(prettyDate + ": " + message);
 				}

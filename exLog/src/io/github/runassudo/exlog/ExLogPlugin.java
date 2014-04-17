@@ -8,6 +8,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.bukkit.Bukkit;
@@ -53,6 +54,7 @@ public class ExLogPlugin extends JavaPlugin {
 				sender.sendMessage(" help");
 				sender.sendMessage(" info");
 				sender.sendMessage(" query [JSON query]");
+				sender.sendMessage(" queryu [JSON query]");
 				sender.sendMessage(" (rollback|rb) (y)? [JSON query]");
 				return true;
 			}
@@ -76,7 +78,31 @@ public class ExLogPlugin extends JavaPlugin {
 						JSONObject queryObject = (JSONObject) new JSONParser()
 								.parse(queryString);
 						ExLogDataHelper.performQuery(new JSONDataQuery(
-								queryObject), sender);
+								queryObject), sender, false);
+					} catch (java.text.ParseException e) {
+						sender.sendMessage(ChatColor.RED
+								+ "Invalid date format.");
+					} catch (org.json.simple.parser.ParseException e) {
+						sender.sendMessage(ChatColor.RED + "Invalid query.");
+					}
+				} else {
+					sender.sendMessage(ChatColor.RED + "No permission.");
+				}
+				return true;
+			}
+			if (args[0].equalsIgnoreCase("queryu")) {
+				if (sender.hasPermission("exlog.command.query")) {
+					if (args.length < 2)
+						return false;
+
+					String queryString = join(" ",
+							Arrays.copyOfRange(args, 1, args.length));
+
+					try {
+						JSONObject queryObject = (JSONObject) new JSONParser()
+								.parse(queryString);
+						ExLogDataHelper.performQuery(new JSONDataQuery(
+								queryObject), sender, true);
 					} catch (java.text.ParseException e) {
 						sender.sendMessage(ChatColor.RED
 								+ "Invalid date format.");
@@ -117,7 +143,7 @@ public class ExLogPlugin extends JavaPlugin {
 							JSONObject queryObject = (JSONObject) new JSONParser()
 									.parse(queryString);
 							ExLogDataHelper.performQuery(new JSONDataQuery(
-									queryObject), sender);
+									queryObject), sender, false);
 							sender.sendMessage("If happy with the results, use /exlog rollback y [query] to perform rollback.");
 						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
@@ -160,7 +186,7 @@ public class ExLogPlugin extends JavaPlugin {
 							JSONObject queryObject = (JSONObject) new JSONParser()
 									.parse(queryString);
 							ExLogDataHelper.performQuery(new JSONDataQuery(
-									queryObject), sender);
+									queryObject), sender, false);
 							sender.sendMessage("If happy with the results, use /exlog remove y [query] to perform removal.");
 						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
@@ -228,6 +254,7 @@ public class ExLogPlugin extends JavaPlugin {
 		jsonEntry.put("z", entry.z);
 		jsonEntry.put("world", entry.world);
 		jsonEntry.put("player", entry.player);
+		jsonEntry.put("uuid", entry.uuid.toString());
 		jsonEntry.put("rolledBack", entry.rolledBack);
 
 		if (entry.otherData.size() > 0) {
@@ -253,6 +280,7 @@ public class ExLogPlugin extends JavaPlugin {
 		entry.z = ((Long) jsonEntry.get("z")).intValue();
 		entry.world = (String) jsonEntry.get("world");
 		entry.player = (String) jsonEntry.get("player");
+		entry.uuid = UUID.fromString((String) jsonEntry.get("uuid"));
 		entry.rolledBack = (Boolean) jsonEntry.get("rolledBack");
 
 		if (jsonEntry.containsKey("otherData")) {

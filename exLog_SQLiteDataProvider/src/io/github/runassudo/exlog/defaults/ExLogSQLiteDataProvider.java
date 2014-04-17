@@ -11,6 +11,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.UUID;
 import java.util.logging.Level;
 
 import org.json.simple.JSONObject;
@@ -21,15 +22,15 @@ public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 	private static final String sqlCreateTable = "CREATE TABLE exlog ("
 			+ "id INTEGER PRIMARY KEY AUTOINCREMENT, " + "origin TEXT, "
 			+ "x INTEGER, " + "y INTEGER, " + "z INTEGER, " + "world TEXT, "
-			+ "player TEXT, " + "date INTEGER, " + "rolledBack BOOLEAN, "
-			+ "otherData TEXT" + ")";
+			+ "player TEXT, " + "uuid TEXT, " + "date INTEGER, "
+			+ "rolledBack BOOLEAN, " + "otherData TEXT" + ")";
 
 	private static final String sqlAppendEntry = "INSERT INTO exlog ("
-			+ "origin, x, y, z, world, player, date, rolledBack, otherData"
-			+ ") VALUES(" + "?, ?, ?, ?, ?, ?, ?, ?, ?" + ")";
+			+ "origin, x, y, z, world, player, uuid, date, rolledBack, otherData"
+			+ ") VALUES(" + "?, ?, ?, ?, ?, ?, ?, ?, ?, ?" + ")";
 
 	private static final String sqlReadEntry = "SELECT * FROM exlog";
-	
+
 	private static final String sqlDeleteEntry = "DELETE FROM exlog";
 
 	@Override
@@ -70,6 +71,7 @@ public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 			entry.z = result.getInt("z");
 			entry.world = result.getString("world");
 			entry.player = result.getString("player");
+			entry.uuid = UUID.fromString(result.getString("uuid"));
 			entry.date = result.getLong("date");
 			entry.rolledBack = result.getBoolean("rolledBack");
 			entry.otherData.putAll((JSONObject) new JSONParser().parse(result
@@ -96,9 +98,10 @@ public class ExLogSQLiteDataProvider extends ExLogDataProvider {
 			statement.setInt(4, entry.z);
 			statement.setString(5, entry.world);
 			statement.setString(6, entry.player);
-			statement.setLong(7, entry.date);
-			statement.setBoolean(8, entry.rolledBack);
-			statement.setString(9, JSONObject.toJSONString(entry.otherData));
+			statement.setString(7, entry.uuid.toString());
+			statement.setLong(8, entry.date);
+			statement.setBoolean(9, entry.rolledBack);
+			statement.setString(10, JSONObject.toJSONString(entry.otherData));
 			statement.executeUpdate();
 		}
 	}

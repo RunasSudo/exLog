@@ -1,6 +1,7 @@
 package io.github.runassudo.exlog;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 import org.bukkit.block.Block;
 
@@ -9,6 +10,7 @@ public class ExLogEntry {
 	public int x = 0, y = 0, z = 0;
 	public String world = "";
 	public String player = "";
+	public UUID uuid;
 	public long date = -1;
 	public boolean rolledBack = false;
 

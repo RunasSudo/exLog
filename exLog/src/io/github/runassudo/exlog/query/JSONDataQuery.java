@@ -41,6 +41,9 @@ public class JSONDataQuery extends ExLogDataQuery {
 		if (json.containsKey("player")
 				&& !json.get("player").equals(entry.player))
 			return false;
+		if (json.containsKey("uuid")
+				&& !json.get("uuid").equals(entry.uuid.toString()))
+			return false;
 		if (json.containsKey("rolledBack")
 				&& !json.get("rolledBack").equals(entry.rolledBack))
 			return false;
@@ -99,6 +102,9 @@ public class JSONDataQuery extends ExLogDataQuery {
 		}
 		if (json.containsKey("player")) {
 			append(sql, "player = '" + json.get("player") + "'");
+		}
+		if (json.containsKey("uuid")) {
+			append(sql, "player = '" + json.get("uuid") + "'");
 		}
 		if (json.containsKey("rolledBack")) {
 			append(sql, "rolledBack = "

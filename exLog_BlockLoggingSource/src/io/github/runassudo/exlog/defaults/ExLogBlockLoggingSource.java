@@ -18,18 +18,22 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 	// TODO: Use player UUIDs for 1.7
 
 	@Override
-	public String formatEntry(ExLogEntry entry) {
+	public String formatEntry(ExLogEntry entry, boolean useUUID) {
 		String blockType = entry.otherData.get("blockType");
 
 		switch (entry.otherData.get("type")) {
 		case "0":
-			return ExLogLoggingSource.defaultFormatEntry(entry, " break " + blockType);
+			return ExLogLoggingSource.defaultFormatEntry(entry, useUUID,
+					" break " + blockType);
 		case "1":
-			return ExLogLoggingSource.defaultFormatEntry(entry, " place " + blockType);
+			return ExLogLoggingSource.defaultFormatEntry(entry, useUUID,
+					" place " + blockType);
 		case "2":
-			return ExLogLoggingSource.defaultFormatEntry(entry, " scoop " + blockType);
+			return ExLogLoggingSource.defaultFormatEntry(entry, useUUID,
+					" scoop " + blockType);
 		case "3":
-			return ExLogLoggingSource.defaultFormatEntry(entry, " empty " + blockType);
+			return ExLogLoggingSource.defaultFormatEntry(entry, useUUID,
+					" empty " + blockType);
 		}
 
 		return null;
@@ -48,8 +52,9 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 					.setType(Material.AIR);
 			return true;
 		case "2":
-			Bukkit.getWorld(entry.world).getBlockAt(entry.x, entry.y, entry.z)
-					.setType(Material.WATER);
+			Bukkit.getWorld(entry.world)
+					.getBlockAt(entry.x, entry.y, entry.z)
+					.setType(Material.valueOf(entry.otherData.get("blockType")));
 			return true;
 		case "3":
 			Bukkit.getWorld(entry.world).getBlockAt(entry.x, entry.y, entry.z)
@@ -66,6 +71,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		entry.origin = getName();
 		ExLogEntry.populate(entry, event.getBlock());
 		entry.player = event.getPlayer().getName();
+		entry.uuid = event.getPlayer().getUniqueId();
 		entry.otherData.put("type", "0");
 		entry.otherData.put("blockType", event.getBlock().getType().name());
 
@@ -79,6 +85,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		entry.origin = getName();
 		ExLogEntry.populate(entry, event.getBlock());
 		entry.player = event.getPlayer().getName();
+		entry.uuid = event.getPlayer().getUniqueId();
 		entry.otherData.put("type", "1");
 		entry.otherData.put("blockType", event.getBlock().getType().name());
 
@@ -92,6 +99,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		entry.origin = getName();
 		ExLogEntry.populate(entry, event.getBlockClicked());
 		entry.player = event.getPlayer().getName();
+		entry.uuid = event.getPlayer().getUniqueId();
 		entry.otherData.put("type", "2");
 		entry.otherData.put("blockType", event.getBlockClicked().getType()
 				.name());
@@ -107,6 +115,7 @@ public class ExLogBlockLoggingSource extends ExLogLoggingSource {
 		ExLogEntry.populate(entry,
 				event.getBlockClicked().getRelative(event.getBlockFace()));
 		entry.player = event.getPlayer().getName();
+		entry.uuid = event.getPlayer().getUniqueId();
 		entry.otherData.put("type", "3");
 		entry.otherData.put("blockType", event.getBucket().name());
 

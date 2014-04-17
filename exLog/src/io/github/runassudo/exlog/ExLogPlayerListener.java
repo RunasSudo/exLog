@@ -29,7 +29,8 @@ public class ExLogPlayerListener implements Listener {
 							block.getX(), block.getY(), block.getZ(), block
 									.getWorld().getName());
 
-					ExLogDataHelper.performQuery(query, event.getPlayer());
+					ExLogDataHelper.performQuery(query, event.getPlayer(),
+							false);
 				} else {
 					event.getPlayer().sendMessage(
 							ChatColor.RED + "No permission.");
@@ -44,7 +45,8 @@ public class ExLogPlayerListener implements Listener {
 							block.getX(), block.getY(), block.getZ(), block
 									.getWorld().getName());
 
-					ExLogDataHelper.performQuery(query, event.getPlayer());
+					ExLogDataHelper.performQuery(query, event.getPlayer(),
+							false);
 				} else {
 					event.getPlayer().sendMessage(
 							ChatColor.RED + "No permission.");
