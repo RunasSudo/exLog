@@ -1,6 +1,7 @@
 package io.github.runassudo.exlog;
 
 import io.github.runassudo.exlog.query.JSONDataQuery;
+import io.github.runassudo.exlog.query.JSONNonRBDataQuery;
 import io.github.runassudo.exlog.util.ExLogDataHelper;
 import io.github.runassudo.exlog.util.ExLogQueryCallback;
 
@@ -127,8 +128,9 @@ public class ExLogPlugin extends JavaPlugin {
 						try {
 							JSONObject queryObject = (JSONObject) new JSONParser()
 									.parse(queryString);
-							ExLogDataHelper.performQuery(new JSONDataQuery(
-									queryObject), new RollbackCallback(sender));
+							ExLogDataHelper.performQuery(
+									new JSONNonRBDataQuery(queryObject),
+									new RollbackCallback(sender));
 						} catch (java.text.ParseException e) {
 							sender.sendMessage(ChatColor.RED
 									+ "Invalid date format.");
@@ -343,9 +345,6 @@ public class ExLogPlugin extends JavaPlugin {
 		public void success(ArrayList<ExLogEntry> results) throws Exception {
 			for (ExLogEntry entry : results) {
 				if (!entry.rolledBack) {
-					ExLogLoggingSource originPlugin = (ExLogLoggingSource) Bukkit
-							.getPluginManager().getPlugin(entry.origin);
-
 					getDataProvider().removeData(
 							new JSONDataQuery(entryToJSON(entry)));
 				}
