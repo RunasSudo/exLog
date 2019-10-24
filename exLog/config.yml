@@ -1,5 +1,0 @@
-dataProvider: ExLogJSONDataProvider
-loggingSources: [ExLogBlockLoggingSource]
-dateFormat: yyyy-MM-dd HH:mm
-stickTool: STICK
-boneTool: BONE

@@ -1,5 +1,0 @@
-name: ExLogSQLiteDataProvider
-main: io.github.runassudo.exlog.defaults.ExLogSQLiteDataProvider
-version: 0.3.0
-author: RunasSudo
-depend: [ExLog]
